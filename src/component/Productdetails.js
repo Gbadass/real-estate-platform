@@ -1,5 +1,10 @@
 import { FaAngleRight, FaAngleLeft} from "react-icons/fa6";
+import { FaShareAlt, FaHeart} from "react-icons/fa";
+import { HiPrinter } from "react-icons/hi";
+
+
 import image011 from "./images/House-Design-1240x720.jpg"
+import image012 from "./images/agent-male-1-1.jpg"
 
 
 function Productdetails() {
@@ -36,8 +41,25 @@ function Productdetails() {
 </div>
 
 <div className="third-div">
-  <div className="third-div-innerd1"></div>
+  <div className="third-div-innerd1">
+    <div className="upper-sec">
+<p className="upper-sec-p">Property ID <span className="span-blue">RH-2017-09</span></p>
+<div className="share-cont">
+  <FaShareAlt className="share-icon"/>
+  <FaHeart className="below-heart"/>
+  <HiPrinter className="below-print"/>
+</div>
+    </div>
+
+    <hr  className="newest-lined"/>
+    <div className="cont-props">
+      
+    </div>
+  </div>
   <div className="third-div-innerd2"></div>
+  <div className="absolute-div">
+    <img src={image012} alt="" />
+  </div>
 </div>
   </div>
 </div>
