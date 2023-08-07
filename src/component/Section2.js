@@ -16,35 +16,92 @@ import image15 from "./images/blog-image-2-1-488x326.jpg"
 import image16 from "./images/blog-image-3-1-488x326.jpg"
 import { LiaBathSolid,LiaBedSolid, LiaExpandSolid } from "react-icons/lia";
 import { FaHeart,FaMapMarkerAlt,FaCamera } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import HomeHeader from "./HomeHeader"
+import FeaturedProperty from "./FeaturedProperty"
+import TalkToExpert from "./TalkToExpert"
+import FindAgents from "./FindAgents"
+import NeedHelp from "./NeedHelp"
+import TAGSFooter from "./TAGSFooter"
 
 
 
 
 function Section2() {
+  const [verified, setVerified] = useState()
+  const [verified2, setVerified2] = useState()
+  const [verified3, setVerified3] = useState()
+  
+  
+  let getToken = localStorage.getItem("Merchant_Token")
+    useEffect(() => {
+        fetch('http://property.reworkstaging.name.ng/v1/properties?merchant=64b7cd2411d45559c8840b5a&verified=true', {
+            headers: { 'authorization': `Bearer ${getToken}` }
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                setVerified(data.data.slice(0,3))
+                console.log(data.data)
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
+    }, [])
 
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const handlePageClick = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+    useEffect(() => {
+        fetch(`http://property.reworkstaging.name.ng/v1/properties?merchant=64b7cd2411d45559c8840b5a&verified=true&type=SALES`, {
+          headers: { 'authorization': `Bearer ${getToken}` }
+        })
+        .then((resp) => resp.json())
+        .then((data) => {
+          setVerified2(data.data.slice(0, 3));
+          console.log(data.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+ 
+    }, [verified]);
+    
+    useEffect(() => {
+      // if (verified3 && verified3.length > 0) {
+      //   const excludeIds = verified2.map(item => item.id).join(',');
+        fetch(`http://property.reworkstaging.name.ng/v1/properties?merchant=64b7cd2411d45559c8840b5a&verified=true&type=RENT`, {
+          headers: { 'authorization': `Bearer ${getToken}` }
+        })
+        .then((resp) => resp.json())
+        .then((data) => {
+          setVerified3(data.data.slice(0, 3));
+          console.log(data.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+      // }
+    }, [verified2]);
+    
+    
 
   return(
+
+
 <div>
+<HomeHeader/>
   <div className="section02">
   <p className="recent-p">Recent</p>
-  <p className="properties">Properties</p>
+  <p className="properties001">Properties</p>
   <p className="latest-props">Check out some of out latest properties.</p>
   <div className="coverage-image">
-<div className="coverage-inner1-1">
+    {verified && verified.map((items) => (
+      <div className="coverage-inner1-1">
   <div className="coverage-img1">
-  <img src={image01} alt="" />
+  <img src={items.image} alt="" />
   <FaHeart className ="new-heart"/>
   <p className="hot01">Hot</p>
   </div>
   <div className="coverage-inner2">
-<h3>Home in Merrick Way</h3>
-<p className="enhance-p">Enchanting three bedroom, three bath homes <br /> with spacious bedroom</p>
+<h3>{items.name}</h3>
+<p className="enhance-p">{items.description}</p>
 <div className="flexed-p">
   <p>Bedroom</p>
   <p>Bathroom</p>
@@ -54,11 +111,11 @@ function Section2() {
 <div className="flexed-p-2">
   <div className="p-1">
     <LiaBedSolid className="bathroom-icon01"/>
-    <p className="number-decs">3</p>
+    <p className="number-decs">{items.bedroom}</p>
   </div>
   <div className="p-1">
     <LiaBathSolid className="bathroom-icon02"/>
-    <p className="number-decs"> 3</p>
+    <p className="number-decs"> {items.bathroom}</p>
   </div>
   <div className="p-1">
     <LiaExpandSolid className="bathroom-icon03"/> 
@@ -66,15 +123,17 @@ function Section2() {
     </div>
 </div>
 <div className="movement">
-<p className="for-sale">For Sale</p>
-<p className="cashway">$540,000</p>
+<p className="for-sale">For {items.type}</p>
+<p className="cashway">${items.price}</p>
 </div>
 
 
   </div>
   
 </div>
-<div className="coverage-inner1">
+    ))}
+
+{/* <div className="coverage-inner1">
   <div className="coverage-img1">
   <img src={image02} alt="" />
   <FaHeart className ="new-heart-2"/>
@@ -111,12 +170,14 @@ function Section2() {
 
   </div>
   
-</div>
-<div className="coverage-inner1">
+</div> */}
+
+
+{/* <div className="coverage-inner1">
   <div className="coverage-img1">
   <img src={image03} alt="" />
   <FaHeart className ="new-heart-3"/>
-  {/* <p className="hot">Hot</p> */}
+
   </div>
   <div className="coverage-inner2">
 <h3>Villa on Hollywood Boulevard</h3>
@@ -149,7 +210,7 @@ function Section2() {
 
   </div>
   
-</div>
+</div> */}
   </div>
 
   <div className="next-cont">
@@ -160,31 +221,29 @@ function Section2() {
 
   </div>
   </div>
-
+<FeaturedProperty/>
 
   <div className="section02">
   <p className="recent-p">properties</p>
-  <p className="properties">For Sale</p>
+  <p className="properties001">For Sale</p>
   <p className="latest-props">Check out some of out latest properties.</p>
     <div className="coverage-image">
-<div className="coverage-inner1-02">
+      {verified2 && verified2.map((items) => (
+        <div className="coverage-inner1-02">
   <div className="coverage-img02">
-  <img src={image01} alt="" />
-  <div className="cameraicon-div02">
-  <FaCamera className="camera-icon"/> 
-  <p >1</p>
-  </div>
+  <img src={items.image} alt="" />
+
   
-  <FaHeart className ="new-heart02"/>
+  {/* <FaHeart className ="new-heart02"/> */}
   <p className="hot03">For sale</p>
   </div>
   <div className="coverage-inner02">
-<h3>Home in Merrick Way</h3>
+<h3>{items.name}</h3>
 <div className="location-text">
 <FaMapMarkerAlt className="location-icon"/>
-<p>Merrick Way, Miami,FL 33134, USA</p>
+<p>{items.address}, {items.city}, {items.country}</p>
 </div>
-<p className="enhance-p02">Added: <span className="enhance-inner">June 15, 2020</span></p>
+<p className="enhance-p02">Added: <span className="enhance-inner">{items.created_at}</span></p>
 <div className="flexed-p">
   <p>Bedroom</p>
   <p>Bathroom</p>
@@ -194,11 +253,11 @@ function Section2() {
 <div className="flexed-p-2">
   <div className="p-1">
     <LiaBedSolid className="bathroom-icon01"/>
-    <p className="number-decs">3</p>
+    <p className="number-decs">{items.bedroom}</p>
   </div>
   <div className="p-1">
     <LiaBathSolid className="bathroom-icon02"/>
-    <p className="number-decs"> 3</p>
+    <p className="number-decs"> {items.bathroom}</p>
   </div>
   <div className="p-1">
     <LiaExpandSolid className="bathroom-icon03"/> 
@@ -207,7 +266,7 @@ function Section2() {
 </div>
 <div className="movement">
 <p className="for-sale02">For Sale</p>
-<p className="cashway02">$540,000</p>
+<p className="cashway02">${items.price}</p>
 </div>
 
 <div className="agent-div">
@@ -225,13 +284,12 @@ function Section2() {
   </div>
   
 </div>
-<div className="coverage-inner1-02">
+      ))}
+
+{/* <div className="coverage-inner1-02">
   <div className="coverage-img02">
   <img src={image02} alt="" />
-  <div className="cameraicon-div">
-  <FaCamera className="camera-icon"/> 
-  <p >1</p>
-  </div>
+
   
   <FaHeart className ="new-heart03"/>
   <p className="hot00">For sale</p>
@@ -282,14 +340,12 @@ function Section2() {
 
   </div>
   
-</div>
-<div className="coverage-inner1-02">
+</div> */}
+
+{/* <div className="coverage-inner1-02">
   <div className="coverage-img02">
   <img src={image03} alt="" />
-  <div className="cameraicon-div00">
-  <FaCamera className="camera-icon"/> 
-  <p >1</p>
-  </div>
+
   
   <FaHeart className ="new-heart002"/>
   <p className="hot000">For sale</p>
@@ -340,7 +396,7 @@ function Section2() {
 
   </div>
   
-</div>
+</div> */}
     </div>
 
     <div className="next-cont">
@@ -356,17 +412,17 @@ function Section2() {
 
   <div className="section02">
   <p className="recent-p">Properties</p>
-  <p className="properties">For Rent</p>
+  <p className="properties001">For Rent</p>
   <p className="latest-props">Check out some of out latest properties.</p>
   <div className="coverage-image">
-<div className="coverage-inner1-1">
+    {verified3 && verified3.map((items) => (
+      <div className="coverage-inner1-1">
   <div className="coverage-img1">
-  <img src={image07} alt="" />
+  <img src={items.image} alt="" />
   <FaHeart className ="new-heart"/>
-  {/* <p className="hot">Hot</p> */}
   </div>
   <div className="coverage-inner02">
-<h3>Home in Merrick Way</h3>
+<h3>{items.name}</h3>
 <p className="enhance-p">We are an award winning and very unique <br /> concept unique</p>
 <div className="flexed-p">
   <p>Area</p>
@@ -378,25 +434,20 @@ function Section2() {
     <LiaExpandSolid className="bathroom-icon01"/>
     <p className="number-decs">4300 <span>sq ft</span></p>
   </div>
-  {/* <div className="p-1">
-    <LiaBathSolid className="bathroom-icon02"/>
-    <p className="number-decs"> 3</p>
-  </div>
-  <div className="p-1">
-    <LiaExpandSolid className="bathroom-icon03"/> 
-    <p className="number-decs">4300 <span>sqft ft</span></p>
-    </div> */}
 </div>
 <div className="movement">
 <p className="for-sale005">For rent</p>
-<p className="cashway005">$2,600 Monthly</p>
+<p className="cashway005">${items.price}</p>
 </div>
 
 
   </div>
   
 </div>
-<div className="coverage-inner1">
+    )) }
+
+
+{/* <div className="coverage-inner1">
   <div className="coverage-img1">
   <img src={image08} alt="" />
   <FaHeart className ="new-heart-2"/>
@@ -434,20 +485,19 @@ function Section2() {
 
   </div>
   
-</div>
-<div className="coverage-inner1">
+</div> */}
+
+{/* <div className="coverage-inner1">
   <div className="coverage-img1">
   <img src={image09} alt="" />
   <FaHeart className ="new-heart-3"/>
-  {/* <p className="hot">Hot</p> */}
   </div>
   <div className="coverage-inner02">
 <h3>Office Space at Northwest 107th</h3>
 <p className="enhance-p">Beautifully lanscaped four story building and  <br /> professionally decorated  commom areas...</p>
 <div className="flexed-p">
   <p>Areas</p>
-  {/* <p>Bathroom</p>
-  <p>Area</p> */}
+
 </div>
 
 <div className="flexed-p-2">
@@ -455,14 +505,7 @@ function Section2() {
     <LiaExpandSolid className="bathroom-icon01"/>
     <p className="number-decs">2830 <span>sq ft</span></p>
   </div>
-  {/* <div className="p-1">
-    <LiaBathSolid className="bathroom-icon02"/>
-    <p className="number-decs"> 3</p>
-  </div>
-  <div className="p-1">
-    <LiaExpandSolid className="bathroom-icon03"/> 
-    <p className="number-decs">4530 <span>sqft ft</span></p>
-    </div> */}
+
 </div>
 <div className="movement">
 <p className="for-sale005">For Rent</p>
@@ -472,7 +515,7 @@ function Section2() {
 
   </div>
   
-</div>
+</div> */}
   </div>
 
   <div className="next-cont">
@@ -483,9 +526,11 @@ function Section2() {
   </div>
   </div>
 
+  <TalkToExpert/>
+
   <div className="section03">
   <p className="recent-p">Meet Our</p>
-  <p className="properties">Agents</p>
+  <p className="properties001">Agents</p>
   <p className="latest-props">Get in touch with our real estate expert</p>
   <div className="coverage-image02">
     <div className="section03-innerd">
@@ -547,9 +592,11 @@ function Section2() {
   </div>
   </div>
 
+  <FindAgents/>
+
   <div className="section05">
   <p className="recent-p">check out recent</p>
-  <p className="properties">News & Updates</p>
+  <p className="properties001">News & Updates</p>
   <p className="latest-props">From real estate industry and beyond</p>
     <div className="coverage-image-05">
 <div className="coverage-image-05-innerd">
@@ -560,7 +607,7 @@ function Section2() {
     <p className="june">June 16, 2020 in <span className="luxury">Luxury</span> </p>
     <p className="image">Image Post Format</p>
     <p className="enthusias">Enthusiastically disintermediate progressive <br /> innovation before high-payoff metrics. Intrinsicly <br /> generate sticky services without…</p>
-    <p><span className="kostas">By</span> Kostas</p>
+    <p className="movepppp"><span className="kostas">By</span> Kostas</p>
   </div>
 
 </div>
@@ -572,7 +619,7 @@ function Section2() {
     <p className="june">June 15, 2020 in <span className="luxury">Luxury</span> </p>
     <p className="image">Gallery Post Format</p>
     <p className="enthusias">Competently harness enterprise vortals via <br /> revolutionary e-tailers. Monotonectally <br /> recaptiualize one-to-one relationships whereas…</p>
-    <p><span className="kostas">By</span> Kostas</p>
+    <p className="movepppp"><span className="kostas">By</span> Kostas</p>
   </div>
 
 </div>
@@ -584,7 +631,7 @@ function Section2() {
     <p className="june">June 13, 2020 in <span className="luxury">Market Trends</span> </p>
     <p className="image">video Post Format</p>
     <p className="enthusias">Uniquely customize future-proof niche markets via <br /> worldwide users. Proactively negotiate user-centric schemas…</p>
-    <p><span className="kostas">By</span> Kostas</p>
+    <p className="movepppp"><span className="kostas">By</span> Kostas</p>
   </div>
 
 </div>
@@ -601,6 +648,10 @@ function Section2() {
       </div>
     </div>
   </div>
+
+  <NeedHelp/>
+
+  <TAGSFooter/>
 
   <div className="section06">
     <div className="">
